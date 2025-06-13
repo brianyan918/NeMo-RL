@@ -33,7 +33,7 @@ def format_squad(data: dict[str, Any]) -> dict[str, list[dict[str, str]]]:
             },
             {
                 "role": "assistant",
-                "content": data["answers"]["text"][0],
+                "content": data["errors"],
             },
         ]
     }
