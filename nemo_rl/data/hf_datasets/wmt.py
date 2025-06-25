@@ -55,8 +55,8 @@ def format_wmt(data: dict[str, Any]) -> dict[str, list[dict[str, str]]]:
 class WMTDataset:
     def __init__(self) -> None:
         data_files = {
-            "train": "../reasoning-mqm/data/en-de.sub.flat.jsonl_v2",
-            "validation": "../reasoning-mqm/data/wmt24-test-en-de.sub.flat.jsonl_v2"
+            "train": "../reasoning-mqm/data/pudding_train.jsonl",
+            "validation": "../reasoning-mqm/data/pudding_dev.jsonl"
         }
         original_ds = load_dataset("json", data_files=data_files)
         self.formatted_ds = original_ds.map(format_wmt)
