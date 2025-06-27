@@ -98,8 +98,8 @@ class WMTDataset:
     def __init__(self, span_type="none") -> None:
         self.span_type = span_type
         data_files = {
-            "train": "../reasoning-mqm/data/pudding_train.jsonl",
-            "validation": "../reasoning-mqm/data/pudding_dev.jsonl"
+            "train": "../reasoning-mqm/data/train_data3.1.jsonl",
+            "validation": "../reasoning-mqm/data/val_data3.1.jsonl"
         }
         original_ds = load_dataset("json", data_files=data_files)
         format_fxn = partial(format_wmt, span_type=self.span_type)

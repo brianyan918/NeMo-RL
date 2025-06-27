@@ -21,7 +21,7 @@ checkpointing:
   save_period: 10
 
 policy:
-  model_name: "Qwen/Qwen3-14B"
+  model_name: "Qwen/Qwen3-1.7B"
   tokenizer:
     name: ${policy.model_name} ## specify if you'd like to use a tokenizer different from the model's default
     # chat_template: "{% for message in messages %}{%- if message['role'] == 'system'  %}{{'Context: ' + message['content'].strip()}}{%- elif message['role'] == 'user'  %}{{' Question: ' + message['content'].strip() + ' Answer:'}}{%- elif message['role'] == 'assistant'  %}{{' ' + message['content'].strip()}}{%- endif %}{% endfor %}"
@@ -82,5 +82,5 @@ logger:
     flush_interval: 10  # How often to flush GPU usage metrics to the loggers (in seconds)
 
 cluster:
-  gpus_per_node: 4
+  gpus_per_node: 1
   num_nodes: 1
