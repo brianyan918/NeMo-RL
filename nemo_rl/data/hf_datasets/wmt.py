@@ -95,11 +95,11 @@ def format_wmt(data: dict[str, Any], span_type="none") -> dict[str, list[dict[st
 
 
 class WMTDataset:
-    def __init__(self, span_type="none") -> None:
+    def __init__(self, span_type="none", train_file=None, val_file=None) -> None:
         self.span_type = span_type
         data_files = {
-            "train": "../reasoning-mqm/data/train_data3.1.jsonl",
-            "validation": "../reasoning-mqm/data/val_data3.1.jsonl"
+            "train": train_file,
+            "validation": val_file
         }
         original_ds = load_dataset("json", data_files=data_files)
         format_fxn = partial(format_wmt, span_type=self.span_type)
