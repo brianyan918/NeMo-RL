@@ -1,5 +1,5 @@
 sft:
-  max_num_epochs: 100
+  max_num_epochs: 10
   max_num_steps: 10000
   val_period: 10
   val_batches: 8
@@ -9,15 +9,15 @@ sft:
   seed: 42
 checkpointing:
   enabled: true
-  checkpoint_dir: results/sft-qwen3-14b-data3.1
+  checkpoint_dir: results/sft-qwen3-1.7b-overfit3
   metric_name: val_loss
   higher_is_better: false
   keep_top_k: 3
   save_period: 10
 policy:
-  model_name: Qwen/Qwen3-14B
+  model_name: Qwen/Qwen3-1.7B
   tokenizer:
-    name: Qwen/Qwen3-14B
+    name: Qwen/Qwen3-1.7B
   train_global_batch_size: 32
   train_micro_batch_size: 1
   max_total_sequence_length: 16000
@@ -29,17 +29,17 @@ policy:
     cpu_offload: false
     sequence_parallel: true
     activation_checkpointing: true
-    tensor_parallel_size: 4
+    tensor_parallel_size: 1
     custom_parallel_plan: null
   dynamic_batching:
     enabled: False
-  make_sequence_length_divisible_by: 4
+  make_sequence_length_divisible_by: 1
   max_grad_norm: 1
   optimizer:
     name: torch.optim.AdamW
     kwargs:
       lr: 5e-06
-      weight_decay: 0.1
+      weight_decay: 0.001
       betas:
         - 0.9
         - 0.98
@@ -53,18 +53,18 @@ data:
   add_eos: true
   add_generation_prompt: false
   span_type: "none"
-  train_file: "../reasoning-mqm/data/train_data3.1.jsonl"
-  val_file: "../reasoning-mqm/data/train_data3.1.jsonl"
+  train_file: "../reasoning-mqm/data/wmt23-en-de.jsonl"
+  val_file: "../reasoning-mqm/data/wmt23-en-de_100.jsonl"
 logger:
-  log_dir: logs/sft-qwen3-14b-data3.1
+  log_dir: logs/sft-qwen3-1.7b-overfit3
   wandb_enabled: true
   tensorboard_enabled: true
   monitor_gpus: true
   wandb:
-    project: data3
-    name: sft-qwen3-14b-data3.1
+    project: overfit
+    name: sft-qwen3-1.7b-overfit3
   tensorboard:
-    log_dir: tb_logs-sft-dev-qwen3-14b-data3.1
+    log_dir: tb_logs-sft-dev-qwen3-1.7b-overfit3
   gpu_monitoring:
     collection_interval: 10
     flush_interval: 10

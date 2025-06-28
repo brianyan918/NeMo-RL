@@ -97,10 +97,7 @@ def setup_data(tokenizer: AutoTokenizer, data_config: DataConfig):
     elif data_cls == "squad":
         data = hf_datasets.SquadDataset()
     elif data_cls == "wmt":
-        if "span_type" not in data_config:
-            data = hf_datasets.WMTDataset()
-        else:
-            data = hf_datasets.WMTDataset(data_config["span_type"])
+        data = hf_datasets.WMTDataset(span_type=data_config["span_type"], train_file=data_config["train_file"], val_file=data_config["val_file"])
     elif data_cls == "prompt_response_dataset":
         data = hf_datasets.PromptResponseDataset(
             data_config["train_data_path"],
