@@ -1,7 +1,7 @@
 sft:
   max_num_epochs: 20
-  max_num_steps: 10000
-  val_period: 10
+  max_num_steps: 1000
+  val_period: 50
   val_batches: 8
   val_global_batch_size: 32
   val_micro_batch_size: 1
@@ -9,11 +9,11 @@ sft:
   seed: 42
 checkpointing:
   enabled: true
-  checkpoint_dir: results/sft-qwen3-1.7b-overfit3
+  checkpoint_dir: results/sft-qwen3-1.7b-ss1-delta2.5
   metric_name: val_loss
   higher_is_better: false
   keep_top_k: 3
-  save_period: 10
+  save_period: 50
 policy:
   model_name: Qwen/Qwen3-1.7B
   tokenizer:
@@ -43,7 +43,7 @@ policy:
       betas:
         - 0.9
         - 0.98
-      eps: 1e-05
+      eps: 1e-08
       foreach: false
       fused: false
 data:
@@ -53,21 +53,21 @@ data:
   add_eos: true
   add_generation_prompt: false
   span_type: "none"
-  train_file: "../reasoning-mqm/data/wmt23-en-de.jsonl"
-  val_file: "../reasoning-mqm/data/wmt23-en-de_100.jsonl"
+  train_file: "../reasoning-mqm/data/da_train_2017-22.jsonl.filt.delta1.0.merged.rand.ende_zhen"
+  val_file: "../reasoning-mqm/data/dev_wmt23_en-de_zh-en.jsonl"
 logger:
-  log_dir: logs/sft-qwen3-1.7b-overfit3
+  log_dir: logs/sft-qwen3-1.7b-ss1-delta1
   wandb_enabled: true
   tensorboard_enabled: true
   monitor_gpus: true
   wandb:
-    project: overfit
-    name: sft-qwen3-1.7b-overfit3
+    project: ss1
+    name: sft-qwen3-1.7b-ss1-delta1
   tensorboard:
-    log_dir: tb_logs-sft-dev-qwen3-1.7b-overfit3
+    log_dir: tb_logs-sft-dev-qwen3-1.7b-ss1-delta1
   gpu_monitoring:
     collection_interval: 10
     flush_interval: 10
 cluster:
-  gpus_per_node: 4
+  gpus_per_node: 1
   num_nodes: 1

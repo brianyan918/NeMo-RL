@@ -1,6 +1,6 @@
 sft:
   max_num_epochs: 20
-  max_num_steps: 10000
+  max_num_steps: 600
   val_period: 10
   val_batches: 8
   val_global_batch_size: 32
@@ -9,15 +9,15 @@ sft:
   seed: 42
 checkpointing:
   enabled: true
-  checkpoint_dir: results/sft-qwen3-1.7b-overfit3
+  checkpoint_dir: results/sft-qwen4-14b-data5-union-sort
   metric_name: val_loss
   higher_is_better: false
   keep_top_k: 3
   save_period: 10
 policy:
-  model_name: Qwen/Qwen3-1.7B
+  model_name: Qwen/Qwen3-14B
   tokenizer:
-    name: Qwen/Qwen3-1.7B
+    name: Qwen/Qwen3-14B
   train_global_batch_size: 32
   train_micro_batch_size: 1
   max_total_sequence_length: 16000
@@ -29,21 +29,21 @@ policy:
     cpu_offload: false
     sequence_parallel: true
     activation_checkpointing: true
-    tensor_parallel_size: 1
+    tensor_parallel_size: 4
     custom_parallel_plan: null
   dynamic_batching:
     enabled: False
-  make_sequence_length_divisible_by: 1
+  make_sequence_length_divisible_by: 4
   max_grad_norm: 1
   optimizer:
     name: torch.optim.AdamW
     kwargs:
       lr: 5e-06
-      weight_decay: 0.001
+      weight_decay: 0.0
       betas:
         - 0.9
         - 0.98
-      eps: 1e-05
+      eps: 1e-08
       foreach: false
       fused: false
 data:
@@ -53,18 +53,18 @@ data:
   add_eos: true
   add_generation_prompt: false
   span_type: "none"
-  train_file: "../reasoning-mqm/data/wmt23-en-de.jsonl"
-  val_file: "../reasoning-mqm/data/wmt23-en-de_100.jsonl"
+  train_file: "../reasoning-mqm/data/pudding_train.jsonl.union.sort"
+  val_file: "../reasoning-mqm/data/pudding_dev.jsonl.union.sort"
 logger:
-  log_dir: logs/sft-qwen3-1.7b-overfit3
+  log_dir: logs/sft-qwen3-14b-data5-union-sort
   wandb_enabled: true
   tensorboard_enabled: true
   monitor_gpus: true
   wandb:
-    project: overfit
-    name: sft-qwen3-1.7b-overfit3
+    project: data5
+    name: sft-qwen3-14b-data5-union-sort
   tensorboard:
-    log_dir: tb_logs-sft-dev-qwen3-1.7b-overfit3
+    log_dir: tb_logs-sft-dev-qwen3-14b-data5-union-sort
   gpu_monitoring:
     collection_interval: 10
     flush_interval: 10
