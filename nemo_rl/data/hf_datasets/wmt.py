@@ -25,7 +25,33 @@ import re
 
 from functools import partial
 
-lang_lookup = {"en":"English", "cz": "Czech", "zh": "Chinese", "de": "German"}
+lang_lookup = {
+    "en": "English",
+    "de": "German",
+    "fr": "French",
+    "cs": "Czech",
+    "zh": "Chinese",
+    "ja": "Japanese",
+    "ru": "Russian",
+    "is": "Icelandic",
+    "fi": "Finnish",
+    "pl": "Polish",
+    "lv": "Latvian",
+    "lt": "Lithuanian",
+    "et": "Estonian",
+    "ta": "Tamil",
+    "gu": "Gujarati",
+    "hi": "Hindi",
+    "bn": "Bengali",
+    "kk": "Kazakh",
+    "uk": "Ukrainian",
+    "tr": "Turkish",
+    "ha": "Hausa",
+    "ps": "Pashto",
+    "km": "Khmer",
+    "zu": "Zulu",
+    "xh": "Xhosa"
+}
 
 def _extract_segment(text):
     """Extracts the single segment between <v> and </v> tags in the input string.
