@@ -102,7 +102,10 @@ class MultiWorkerFuture:
 
 
 class RayWorkerBuilder:
-    @ray.remote
+    @ray.remote(runtime_env={
+        "pip": [
+            "peft"
+        ]})
     class IsolatedWorkerInitializer:
         def __init__(self, ray_actor_class_fqn: str, *init_args, **init_kwargs):
             self.ray_actor_class_fqn = ray_actor_class_fqn

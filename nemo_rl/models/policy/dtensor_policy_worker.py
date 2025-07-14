@@ -28,6 +28,12 @@ from torch.distributed.tensor import DTensor
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from transformers.integrations.accelerate import find_tied_parameters
 
+import sys
+print(f"[Ray Worker] Python path: {sys.executable}")
+print(f"[Ray Worker] sys.path: {sys.path}")
+
+from peft import get_peft_model, LoraConfig, TaskType
+
 from nemo_rl.algorithms.interfaces import LossFunction, LossType
 from nemo_rl.distributed.batched_data_dict import BatchedDataDict
 from nemo_rl.models.dtensor.parallelize import (
@@ -126,6 +132,10 @@ class DTensorPolicyWorker:
         init_reference_model: bool = True,
     ):
         self.cfg = config
+        if "use_lora" in config:
+            self.use_lora = config["use_lora"]
+        else:
+            self.use_lora = False
         # torch distributed init. Envars for rank, world_size, and master_addr and master_port are set from the ray remote call
         torch.distributed.init_process_group(backend="nccl")
         self.rank = torch.distributed.get_rank()
@@ -157,6 +167,28 @@ class DTensorPolicyWorker:
                 model_name
             ),  # due to https://github.com/huggingface/transformers/issues/38002
         )
+        if self.use_lora:
+            print("USING LORA")
+            peft_config = LoraConfig(
+                lora_alpha=16,                           # Scaling factor for LoRA
+                lora_dropout=0.05,                       # Add slight dropout for regularization
+                r=64,                                    # Rank of the LoRA update matrices
+                bias="none",                             # No bias reparameterization
+                task_type="CAUSAL_LM",                   # Task type: Causal Language Modeling
+                target_modules=[
+                    "q_proj",
+                    "k_proj",
+                    "v_proj",
+                    "o_proj",
+                    "gate_proj",
+                    "up_proj",
+                    "down_proj",
+                ],  # Target modules for LoRA
+            )
+            self.model = get_peft_model(self.model, peft_config)
+            self.model.print_trainable_parameters()
+            print(self.model)
+        
         # caching since this property is not always preserved after FSDP
         self.num_tied_weights = len(find_tied_parameters(self.model))
         self.skip_tie_check = os.environ.get(
@@ -194,7 +226,6 @@ class DTensorPolicyWorker:
             ],
             custom_parallel_plan=self.cfg["dtensor_cfg"]["custom_parallel_plan"],
         )
-
         if self.cpu_offload:
             self.model = self.move_buffer_to_device(self.model, "cpu")
 

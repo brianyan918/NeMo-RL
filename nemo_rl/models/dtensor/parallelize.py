@@ -44,6 +44,7 @@ from transformers.models.qwen3.modeling_qwen3 import Qwen3ForCausalLM
 from nemo_rl.distributed.model_utils import from_parallel_logits_to_logprobs
 from nemo_rl.models.policy.utils import import_class_from_path
 
+from peft.peft_model import PeftModelForCausalLM
 
 class RotaryEmbedParallel(SequenceParallel):
     """Custom SequenceParallel class for Qwen2 / Gemma3 rotary embeddings because the input is a tuple."""
@@ -402,6 +403,10 @@ def _parallelize_model(
         layers: torch.nn.ModuleList = model.language_model.model.layers  # type: ignore
         num_attention_heads = model.config.text_config.num_attention_heads
         num_key_value_heads = model.config.text_config.num_key_value_heads
+    elif model_cls == PeftModelForCausalLM:
+        layers: torch.nn.ModuleList = model.model.model.layers  # type: ignore
+        num_attention_heads = model.config.num_attention_heads
+        num_key_value_heads = model.config.num_key_value_heads
     else:
         layers: torch.nn.ModuleList = model.model.layers  # type: ignore
         num_attention_heads = model.config.num_attention_heads
